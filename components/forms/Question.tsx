@@ -21,6 +21,7 @@ import { QuestionsSchema } from "@/lib/validations";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { useTheme } from "@/context/ThemeProvider";
+import { createQuestion } from "@/lib/actions/question.action";
 
 const type = "Edit";
 
@@ -44,6 +45,7 @@ const Question = () => {
     setIsSubmitting(true);
 
     try {
+      await createQuestion({});
     } catch (error) {
     } finally {
       setIsSubmitting(false);
