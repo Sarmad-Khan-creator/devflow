@@ -7,71 +7,10 @@ import { HomePageFilters } from "@/constants/filters";
 import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCards from "@/components/cards/QuestionCard";
+import { getQuestions } from "@/lib/actions/question.action";
 
-const questions = [
-  {
-    _id: "1",
-    title: "Cascading deletes in SQLAlchemy?",
-    tags: [
-      { _id: "1", name: "python" },
-      { _id: "2", name: "sql" },
-    ],
-    author: {
-      _id: "author1",
-      name: "John Doe",
-      picture: "url_to_picture",
-    },
-    upvotes: ["10"],
-    views: 100,
-    answers: [
-      { answerId: "ans1", content: "Answer 1" },
-      { answerId: "ans2", content: "Answer 2" },
-    ],
-    createdAt: new Date("2021-09-01T12:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title: "How to center a div?",
-    tags: [
-      { _id: "3", name: "css" },
-      { _id: "4", name: "sql" },
-    ],
-    author: {
-      _id: "author2",
-      name: "John Doe",
-      picture: "url_to_another_picture",
-    },
-    upvotes: ["10"],
-    views: 100,
-    answers: [
-      { answerId: "ans3", content: "Answer 3" },
-      { answerId: "ans4", content: "Answer 4" },
-    ],
-    createdAt: new Date("2021-09-01T12:00:00.000Z"),
-  },
-  {
-    _id: "3",
-    title: "Cascading deletes in SQLAlchemy?",
-    tags: [
-      { _id: "5", name: "python" },
-      { _id: "6", name: "sql" },
-    ],
-    author: {
-      _id: "author3",
-      name: "John Doe",
-      picture: "url_to_third_picture",
-    },
-    upvotes: ["10"],
-    views: 100,
-    answers: [
-      { answerId: "ans5", content: "Answer 5" },
-      { answerId: "ans6", content: "Answer 6" },
-    ],
-    createdAt: new Date("2021-09-01T12:00:00.000Z"),
-  },
-];
-
-const Home = () => {
+const Home = async () => {
+  const result = await getQuestions({});
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -100,8 +39,8 @@ const Home = () => {
       <HomeFilters />
 
       <div className="mt-7 flex w-full flex-col gap-6">
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCards
               key={question._id}
               _id={question._id}
@@ -110,7 +49,7 @@ const Home = () => {
               author={question.author}
               upvotes={question.upvotes}
               views={question.views}
-              answers={question.answers}
+              answers={question.answer}
               createdAt={question.createdAt}
             />
           ))

@@ -20,7 +20,7 @@ interface QuestionProps {
   };
   upvotes: string[];
   views: number;
-  answers: Array<object>;
+  answers: [];
   createdAt: Date;
   clerkId?: string | null;
 }
@@ -80,7 +80,9 @@ const QuestionCard = ({
           <Metric
             imgUrl="/assets/icons/message.svg"
             alt="message"
-            value={formatAndDivideNumber(answers.length)}
+            value={
+              answers.length === 0 ? "0" : formatAndDivideNumber(answers.length)
+            }
             title=" Answers"
             textStyles="small-medium text-dark400_light800"
           />
