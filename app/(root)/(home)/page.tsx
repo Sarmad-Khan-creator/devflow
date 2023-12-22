@@ -49,7 +49,7 @@ const Home = async () => {
               author={question.author}
               upvotes={question.upvotes}
               views={question.views}
-              answers={question.answer}
+              answers={question.answers}
               createdAt={question.createdAt}
             />
           ))
