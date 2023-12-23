@@ -10,7 +10,7 @@ const connectToDatabase = async () => {
   }
 
   if (isConnected) {
-    console.log("Already connected to database");
+    console.log("Already connected");
     return;
   }
 
