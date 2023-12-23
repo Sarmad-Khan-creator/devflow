@@ -24,8 +24,6 @@ import Image from "next/image";
 import { useTheme } from "@/context/ThemeProvider";
 import { createQuestion } from "@/lib/actions/question.action";
 
-const type = "Ask";
-
 interface Props {
   mongoUserId: string;
 }
@@ -241,11 +239,7 @@ const Question = ({ mongoUserId }: Props) => {
           className="primary-gradient w-fit !text-light-900"
           disabled={isSubmitting}
         >
-          {isSubmitting ? (
-            <>{type === "Edit" ? "Editing..." : "Posting..."}</>
-          ) : (
-            <>{type === "Edit" ? "Edit Question" : "Ask a Question"}</>
-          )}
+          Ask a Question
         </Button>
       </form>
     </Form>
