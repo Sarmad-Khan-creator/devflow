@@ -1,13 +1,11 @@
 import React from "react";
 
-interface ChildrenProps {
-  children: React.ReactNode;
-}
-
-export default function Layout({ children }: ChildrenProps): React.JSX.Element {
+const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="flex min-h-screen w-full items-center justify-center">
       {children}
     </main>
   );
-}
+};
+
+export default layout;
