@@ -1,5 +1,4 @@
 "use server";
-
 import connectToDatabase from "../mongoose";
 import User from "../../database/user.model";
 import {
