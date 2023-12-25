@@ -140,6 +140,7 @@ const Question = ({ mongoUserId }: Props) => {
               </FormLabel>
               <FormControl className="mt-3.5">
                 <Editor
+                  key={mode}
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => {
                     // @ts-ignore
