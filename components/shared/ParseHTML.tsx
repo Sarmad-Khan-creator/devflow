@@ -35,7 +35,11 @@ const ParseHTML = ({ data }: Props) => {
   useEffect(() => {
     Prism.highlightAll();
   }, []);
-  return <div>{parse(data)}</div>;
+  return (
+    <div>
+      <p>{parse(data)}</p>
+    </div>
+  );
 };
 
 export default ParseHTML;
