@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import { Metadata } from "next";
 import ThemeProvider from "../context/ThemeProvider";
 import "./globals.css";
+import "../styles/prism.css";
 
 export const metadata: Metadata = {
   title: "DevOverflow",
