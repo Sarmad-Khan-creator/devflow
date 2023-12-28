@@ -48,8 +48,7 @@ export const formatAndDivideNumber = (inputNumber: number): string => {
     formattedNumber = (inputNumber / 1e3).toFixed(2);
     factor = 1e3;
   } else {
-    formattedNumber = inputNumber.toFixed(2);
-    factor = 1;
+    return `${inputNumber}`;
   }
 
   let extension: string;
