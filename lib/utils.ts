@@ -62,3 +62,25 @@ export const formatAndDivideNumber = (inputNumber: number): string => {
 
   return `${formattedNumber}${extension}`;
 };
+
+export const getJoinedDate = (date: Date): string => {
+  const monthNames: string[] = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${month} ${year}`;
+};
