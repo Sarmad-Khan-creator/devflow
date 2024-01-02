@@ -38,7 +38,7 @@ const Votes = ({
 
   const handleSaved = async () => {
     await toggleSavedQuestion({
-      userId: JSON.parse(userId),
+      userId: userId,
       questionId: JSON.parse(itemId),
       path: pathname,
     });

@@ -10,6 +10,8 @@ import {
 import Tag, { ITag } from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
 import Question from "@/database/question.model";
+import { QuestionsSchema } from "../validations";
+import { revalidatePath } from "next/cache";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -36,7 +38,15 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const tags = await Tag.find({});
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof Tag> = {};
+
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
+    }
+
+    const tags = await Tag.find(query);
 
     return { tags };
   } catch (error) {
@@ -56,7 +66,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       path: "questions",
       model: Question,
       match: searchQuery
-        ? { title: { $regex: searchQuery, $option: "i" } }
+        ? { title: { $regex: searchQuery, $options: "i" } }
         : {},
       options: {
         sort: { createdAt: -1 },
@@ -77,5 +87,19 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
   } catch (error) {
     throw error;
     console.log(error);
+  }
+}
+
+export async function getPopularTags() {
+  try {
+    const popularTags = await Tag.aggregate([
+      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
+      { $sort: { numberOfQuestions: -1 } },
+      { $limit: 5 },
+    ]);
+
+    return popularTags;
+  } catch (error) {
+    throw error;
   }
 }

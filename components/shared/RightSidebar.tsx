@@ -2,19 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RenderTag from "./RenderTag";
+import { getHotQuestions } from "@/lib/actions/question.action";
+import { getPopularTags } from "@/lib/actions/tag.action";
 
-const hotQuestions = [
-  { _id: "q1", title: "How to center a div?" },
-  { _id: "q2", title: "How next file base routing works?" },
-  { _id: "q3", title: "How react routing works?" },
-];
-
-const popularTags = [
-  { _id: "tag1", name: "react", numberOfQuestions: 3 },
-  { _id: "tag12", name: "next js", numberOfQuestions: 5 },
-  { _id: "tag3", name: "javascript", numberOfQuestions: 7 },
-];
 const RightSidebar = async () => {
+  const hotQuestions = await getHotQuestions();
+  const popularTags = await getPopularTags();
+
   return (
     <section className="background-light900_dark200 light-border custom-scrollbar sticky right-0 top-0 flex h-screen w-[350px] flex-col overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>

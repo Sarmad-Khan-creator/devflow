@@ -1,7 +1,7 @@
 "use server";
 
 import connectToDatabase from "../mongoose";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, _FilterQuery } from "mongoose";
 import User from "../../database/user.model";
 import {
   CreateUserParams,
@@ -90,7 +90,16 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     const { page = 1, pageSize = 20, filter, searchQuery } = params;
 
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const query: FilterQuery<typeof User> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+        { username: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
 
     return { users };
   } catch (error) {
