@@ -25,11 +25,23 @@ export async function createAnswer(params: CreateAnswerParams) {
       question,
     });
 
-    await Question.findByIdAndUpdate(question, {
+    const questionObject = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer },
     });
 
     // TODO: Add interactions
+
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: newAnswer._id,
+      tags: questionObject.tags,
+    });
+
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -38,11 +50,13 @@ export async function createAnswer(params: CreateAnswerParams) {
   }
 }
 
-export async function getAnswer(params: GetAnswersParams) {
+export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
 
-    const { questionId, sortBy } = params;
+    const { questionId, sortBy, page = 1, pageSize = 10 } = params;
+
+    const skipAmount = (page - 1) * pageSize;
 
     let sortOptions = {};
 
@@ -72,9 +86,17 @@ export async function getAnswer(params: GetAnswersParams) {
         model: User,
         select: "_id clerkId picture name",
       })
-      .sort(sortOptions);
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
 
-    return { answers };
+    const totalAnswer = await Answer.countDocuments({
+      question: JSON.parse(questionId),
+    });
+
+    const isNextAnswer = totalAnswer > skipAmount + answers.length;
+
+    return { answers, isNextAnswer };
   } catch (error) {
     throw error;
     console.log(error);
@@ -106,6 +128,14 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
     if (!answer) {
       throw new Error("Question not found");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -139,6 +169,14 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
     if (!answer) {
       throw new Error("Question not found");
     }
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? -2 : 2 },
+    });
+
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasdownVoted ? -10 : 10 },
+    });
 
     revalidatePath(path);
   } catch (error) {

@@ -11,6 +11,7 @@ import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type: string;
@@ -42,9 +43,23 @@ const Votes = ({
       questionId: JSON.parse(itemId),
       path: pathname,
     });
+
+    return toast({
+      title: `Question ${
+        !hasSaved ? "Saved in" : "Removed from"
+      } your collection`,
+      variant: !hasupVoted ? "default" : "destructive",
+    });
   };
 
   const handleVote = async (action: string) => {
+    if (!userId) {
+      return toast({
+        title: "Please login",
+        description: "You must be logged in to perform this action",
+      });
+    }
+
     if (action === "upvote") {
       if (type === "question") {
         await upvoteQuestion({
@@ -63,6 +78,11 @@ const Votes = ({
           path: pathname,
         });
       }
+
+      return toast({
+        title: `Upvote ${!hasupVoted ? "Successfull" : "Removed"}`,
+        variant: !hasupVoted ? "default" : "destructive",
+      });
     } else if (action === "downvote") {
       if (type === "question") {
         await downvoteQuestion({
@@ -82,6 +102,11 @@ const Votes = ({
         });
       }
     }
+
+    return toast({
+      title: `Downvote ${!hasdownVoted ? "Successfull" : "Removed"}`,
+      variant: !hasdownVoted ? "default" : "destructive",
+    });
   };
 
   useEffect(() => {
@@ -150,8 +175,8 @@ const Votes = ({
           }
           width={18}
           height={18}
-          alt="downvote"
-          className="cursor-pointer"
+          alt="star"
+          className="cursor-pointer h-auto w-auto"
           onClick={handleSaved}
         />
       )}
