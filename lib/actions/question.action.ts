@@ -6,16 +6,15 @@ import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
 import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
+import { FilterQuery } from "mongoose";
 
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     connectToDatabase();
-<<<<<<< Updated upstream
     const questions = await Question.find({})
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
       .sort({ createdAt: -1 });
-=======
 
     const { searchQuery, filter, page = 1, pageSize = 1 } = params;
 
@@ -47,14 +46,6 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       default:
         break;
     }
-
-    const questions = await Question.find(query)
-      .populate({ path: "tags", model: Tag })
-      .populate({ path: "author", model: User })
-      .skip(skipAmount)
-      .limit(pageSize)
-      .sort(sortOptions);
->>>>>>> Stashed changes
 
     const totalQuestions = await Question.countDocuments(query);
 
