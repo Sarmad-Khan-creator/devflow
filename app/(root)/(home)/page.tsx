@@ -8,9 +8,21 @@ import HomeFilters from "@/components/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
 import QuestionCards from "@/components/cards/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
+<<<<<<< Updated upstream
 
 const Home = async () => {
   const result = await getQuestions({});
+=======
+import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
+
+const Home = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getQuestions({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams?.page ? +searchParams.page : 1,
+  });
+>>>>>>> Stashed changes
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -63,6 +75,12 @@ const Home = async () => {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

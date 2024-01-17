@@ -10,12 +10,57 @@ import { revalidatePath } from "next/cache";
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
     connectToDatabase();
+<<<<<<< Updated upstream
     const questions = await Question.find({})
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
       .sort({ createdAt: -1 });
+=======
 
-    return { questions };
+    const { searchQuery, filter, page = 1, pageSize = 1 } = params;
+
+    const skipAmount = (page - 1) * pageSize;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    let sortOptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+
+      case "unanswered":
+        query.answers = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
+    const questions = await Question.find(query)
+      .populate({ path: "tags", model: Tag })
+      .populate({ path: "author", model: User })
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOptions);
+>>>>>>> Stashed changes
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const isNext = totalQuestions > skipAmount + questions.length;
+
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;
